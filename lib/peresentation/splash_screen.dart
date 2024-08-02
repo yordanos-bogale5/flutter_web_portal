@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -81,7 +82,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // int _pageIndex = 0;
+  void _makePhoneCall(String phoneNumber) async {
+    if (await canLaunch('tel:$phoneNumber')) {
+      await launch('tel:$phoneNumber');
+    } else {
+      throw 'Could not launch $phoneNumber';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,18 +97,21 @@ class _HomeScreenState extends State<HomeScreen> {
         initialUrl: 'https://etre.creavers.com/',
         javascriptMode: JavascriptMode.unrestricted,
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: const Color.fromRGBO(255, 111, 0, 1),
-        items: const <Widget>[
-          Icon(Icons.phone, size: 30),
-   
-        ],
-        onTap: (index) {
-          setState(() {
-       
-          });
-          // Handle item tap here if necessary
-        },
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(top: 5),
+        child: CurvedNavigationBar(
+          height: 55,
+          backgroundColor: const Color.fromRGBO(255, 111, 0, 1),
+          items: const <Widget>[
+            Icon(Icons.phone, size: 30),
+          ],
+          onTap: (index) {
+            // Handle item tap here
+            if (index == 0) {
+              _makePhoneCall('8808');
+            }
+          },
+        ),
       ),
     );
   }
